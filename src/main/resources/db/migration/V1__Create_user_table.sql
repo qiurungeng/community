@@ -1,7 +1,3 @@
-## Spring Boot 项目学习，码农社区
-
-## 脚本
-```sql
 create table USER
 (
 	ID INTEGER auto_increment,
@@ -13,5 +9,3 @@ create table USER
 	constraint USER_PK
 		primary key (ID)
 );
-```
-
