@@ -46,17 +46,28 @@ public class AuthorizeController {
         accessTokenDto.setClient_secret(client_secret);
         accessTokenDto.setRedirect_uri(redirect_uri);
         String accessToken = githubProvider.getAccessToken(accessTokenDto);
-        GithubUser githubUser = githubProvider.getUser(accessToken);
+        GithubUser githubUser = githubProvider.getUser(accessToken);  //得到Github登录授权所得的Github用户信息
 
-        if (githubUser!=null){
-            User user = new User();
-            String token=UUID.randomUUID().toString();
-            user.setToken(token);
-            user.setName(githubUser.getName());
-            user.setAccountId(""+githubUser.getId());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            userMapper.insert(user);
+        if (githubUser!=null && githubUser.getId()!=null){
+
+            String token=UUID.randomUUID().toString();  //随机生成新cookieID
+            User dbUser=userMapper.findByAccountId(githubUser.getId()+"");  //查询数据库看有无该用户记录
+
+            if(dbUser==null){
+                //若该Github用户不存在于数据库当中，则为其新建用户数据并添加到数据库
+                User user = new User();
+                user.setToken(token);
+                user.setName(githubUser.getName());
+                user.setAccountId(""+githubUser.getId());
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                user.setAvatarUrl(githubUser.getAvatar_url());
+                userMapper.insert(user);
+            }else {
+                //数据库已有该Github用户的记录，则只需更新其cookie（即token）值
+                userMapper.updateToken(dbUser.getId(),token);
+            }
+
             // 登录成功，写入cookie和session
 //            request.getSession().setAttribute("user",githubUser);
             response.addCookie(new Cookie("token",token));
