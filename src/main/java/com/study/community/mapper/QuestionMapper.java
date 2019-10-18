@@ -17,6 +17,15 @@ public interface QuestionMapper {
             "#{likeCount},#{tag})")
     void create(Question question);
 
-    @Select("select * from question")
-    List<Question> list();
+    @Select("select * from question limit #{offset},#{size}")
+    List<Question> list(int offset, int size);
+
+    @Select("select count(1) from question")
+    int count();
+
+    @Select("select * from question where creator=#{userId} limit #{offset},#{size}")
+    List<Question> listForUser(int userId, int offset, int size);
+
+    @Select("select count(1) from question where creator=#{userId}")
+    int countByUserId(int userId);
 }

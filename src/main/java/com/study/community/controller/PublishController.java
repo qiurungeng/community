@@ -29,12 +29,11 @@ public class PublishController {
             @RequestParam("description")String description,
             @RequestParam("tag")String tag,
             HttpServletRequest request,
-            Model model
-    ){
+            Model model){
         User user=(User)request.getSession().getAttribute("user");
         if(user==null){
-            model.addAttribute("error","用户未登录");
-            return "publish";
+            model.addAttribute("error","会话超时，请重新登录用户！");
+            return "redirect:/";
         }
         Question question = new Question();
         question.setTitle(title);
