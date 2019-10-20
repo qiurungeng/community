@@ -2,6 +2,8 @@ package com.study.community.service;
 
 import com.study.community.dto.PaginationDto;
 import com.study.community.dto.QuestionDto;
+import com.study.community.exception.CustomizeErrorCode;
+import com.study.community.exception.CustomizeException;
 import com.study.community.mapper.QuestionMapper;
 import com.study.community.mapper.UserMapper;
 import com.study.community.model.Question;
@@ -82,6 +84,9 @@ public class QuestionService {
 
     public QuestionDto getById(int id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question==null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         User user=userMapper.selectByPrimaryKey(question.getCreator());
 
         QuestionDto questionDto=new QuestionDto();
@@ -94,7 +99,10 @@ public class QuestionService {
         if (question.getId()!=null){
             question.setGmtModified(System.currentTimeMillis());
             //questionMapper.update(question);
-            questionMapper.updateByPrimaryKeySelective(question);
+            int updated=questionMapper.updateByPrimaryKeySelective(question);
+            if (updated!=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }else {
             //创建新的问题
             question.setGmtCreate(System.currentTimeMillis());
