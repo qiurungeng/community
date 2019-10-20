@@ -3,11 +3,11 @@
 <head>
     <title>码畜社区</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}"/>
-    <link rel="stylesheet" th:href="@{css/community.css}"/>
-    <script src="js/jquery-3.4.1.min.js"></script>
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap-theme.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/community.css}"/>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:replace="navigation :: nav_bar"></div>
@@ -20,7 +20,7 @@
             <ul class="media-list" th:each="question:${pagination.questions}">
                 <li class="media">
                     <div class="media-left">
-                        <a href="#">
+                        <a th:href="@{'/question/'+${question.id}}">
                             <img class="media-object img-rounded"
                                  src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571315051952&di=d66acc243258f734e7cc486b1490571f&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F69ad7a731f43d4b8729f1a2fbe65c43801ca0f033250-EV1vMf_fw658"
                             th:src="@{${question.user.avatarUrl}}">
@@ -46,7 +46,7 @@
                         </a>
                     </li>
                     <li th:if="${pagination.showPrevious}">
-                        <a href="@{/(page=${page}-1)}" aria-label="Previous">
+                        <a th:href="@{/(page=${pagination.page-1})}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -54,7 +54,7 @@
                         <a th:href="@{/(page=${page})}" th:text="${page}"></a>
                     </li>
                     <li th:if="${pagination.showNext}">
-                        <a href="/?page=1" aria-label="Previous">
+                        <a th:href="@{/(page=${pagination.page+1})}" aria-label="Previous">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

@@ -5,6 +5,7 @@ import com.study.community.dto.GithubUser;
 import com.study.community.mapper.UserMapper;
 import com.study.community.model.User;
 import com.study.community.provider.GithubProvider;
+import com.study.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -32,7 +33,7 @@ public class AuthorizeController {
     String redirect_uri;
 
     @Autowired
-    UserMapper userMapper;
+    UserService userService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
@@ -51,30 +52,54 @@ public class AuthorizeController {
         if (githubUser!=null && githubUser.getId()!=null){
 
             String token=UUID.randomUUID().toString();  //随机生成新cookieID
-            User dbUser=userMapper.findByAccountId(githubUser.getId()+"");  //查询数据库看有无该用户记录
 
-            if(dbUser==null){
-                //若该Github用户不存在于数据库当中，则为其新建用户数据并添加到数据库
-                User user = new User();
-                user.setToken(token);
-                user.setName(githubUser.getName());
-                user.setAccountId(""+githubUser.getId());
-                user.setGmtCreate(System.currentTimeMillis());
-                user.setGmtModified(user.getGmtCreate());
-                user.setAvatarUrl(githubUser.getAvatar_url());
-                userMapper.insert(user);
-            }else {
-                //数据库已有该Github用户的记录，则只需更新其cookie（即token）值
-                userMapper.updateToken(dbUser.getId(),token);
-            }
+            //User dbUser=userMapper.findByAccountId(githubUser.getId()+"");  //查询数据库看有无该用户记录
+            User user=new User();
+            user.setToken(token);
+            user.setName(githubUser.getName());
+            user.setAccount(""+githubUser.getId());
+            user.setAvatarUrl(githubUser.getAvatar_url());
+            userService.createOrUpdate(user);
+
+            System.out.println("【AuthorizeController】:"+user);
+
+//
+//            if(dbUser==null){
+//                //若该Github用户不存在于数据库当中，则为其新建用户数据并添加到数据库
+//                User user = new User();
+//                user.setToken(token);
+//                user.setName(githubUser.getName());
+//                user.setAccountId(""+githubUser.getId());
+//                user.setGmtCreate(System.currentTimeMillis());
+//                user.setGmtModified(user.getGmtCreate());
+//                user.setAvatarUrl(githubUser.getAvatar_url());
+//                userMapper.insert(user);
+//            }else {
+//                //数据库已有该Github用户的记录，则只需更新其cookie（即token）值
+//                userMapper.updateToken(dbUser.getId(),token);
+//            }
+//
 
             // 登录成功，写入cookie和session
-//            request.getSession().setAttribute("user",githubUser);
+            request.getSession().setAttribute("user",user);
             response.addCookie(new Cookie("token",token));
-
+            System.out.println("登陆成功");
             return "redirect:/";
         }else {
             return "redirect:/";
         }
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,HttpServletResponse response){
+        System.out.println("用户登出");
+        request.getSession().removeAttribute("user");
+        //删除cookie
+        Cookie cookieDelete=new Cookie("token",null);
+        cookieDelete.setMaxAge(0);
+        response.addCookie(cookieDelete);
+
+        return "redirect:/";
+    }
+
 }

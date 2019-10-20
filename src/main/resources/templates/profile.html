@@ -23,7 +23,7 @@
                 <ul class="media-list" th:each="question:${pagination.questions}">
                     <li class="media">
                         <div class="media-left">
-                            <a href="#">
+                            <a th:href="@{'/question/'+${question.id}}">
                                 <img class="media-object img-rounded"
                                      src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1571315051952&di=d66acc243258f734e7cc486b1490571f&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F69ad7a731f43d4b8729f1a2fbe65c43801ca0f033250-EV1vMf_fw658"
                                      th:src="@{${question.user.avatarUrl}}">
@@ -35,6 +35,7 @@
                             <span class="text-desc">
                             •<span th:text="${question.commentCount}"></span>个回复
                             •<span th:text="${question.viewCount}"></span> 次浏览
+                            •<span th:text="${question.id==null}"></span> 问题ID
                             •<span th:text="${#dates.format(question.gmtModified,'yyyy-MM-dd')}"></span>
                         </span>
                         </div>
@@ -90,11 +91,19 @@
 <script type="text/javascript" th:inline="javascript">
     //检测用户登录是否超时
     (function () {
-        var errorInfo = /*[[${error}]]*/null;
-        if (errorInfo!=null){
-            alert(errorInfo);
+        var user = /*[[${session.user}]]*/null;
+
+        if (user==null){
+            alert("用户未登录");
             window.location.replace("/");
+        }else {
+            var errorInfo = /*[[${error}]]*/null;
+            if (errorInfo!=null){
+                alert(errorInfo);
+                window.location.replace("/");
+            }
         }
+
     })();
 
 </script>

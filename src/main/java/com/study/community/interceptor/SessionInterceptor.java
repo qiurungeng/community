@@ -2,6 +2,7 @@ package com.study.community.interceptor;
 
 import com.study.community.mapper.UserMapper;
 import com.study.community.model.User;
+import com.study.community.model.UserExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,22 +19,31 @@ public class SessionInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("拦截器工作了"+request.getRequestURL());
         Cookie[] cookies=request.getCookies();
+        User sessionUser = (User) request.getSession().getAttribute("user");
+        User cookieUser=null;
+        //看session中是否有已登录的User
+        if (sessionUser!=null){
+            return true;
+        }
+        //看Cookie中是否有已登录的User
         if(cookies!=null && cookies.length!=0){
-            User user=null;
             for (Cookie cookie:cookies) {
                 if (cookie.getName().equals("token")){
                     String token=cookie.getValue();
-                    user=userMapper.findByToken(token);
-                    if (user!=null){
-                        request.getSession().setAttribute("user",user);
+                    UserExample userExample=new UserExample();
+                    userExample.createCriteria().andTokenEqualTo(token);
+                    cookieUser=userMapper.selectByExample(userExample).get(0);
+                    if (cookieUser!=null){
+                        request.getSession().setAttribute("user",cookieUser);
                     }
                     break;
                 }
             }
-            if (user==null){
+            if (cookieUser==null){
+                System.out.println("卡在这里了");
                 response.sendRedirect("/");
-                return false;
             }
         }
         return true;
