@@ -4,6 +4,7 @@ import com.study.community.dto.PaginationDto;
 import com.study.community.dto.QuestionDto;
 import com.study.community.exception.CustomizeErrorCode;
 import com.study.community.exception.CustomizeException;
+import com.study.community.mapper.QuestionExtMapper;
 import com.study.community.mapper.QuestionMapper;
 import com.study.community.mapper.UserMapper;
 import com.study.community.model.Question;
@@ -24,6 +25,8 @@ public class QuestionService {
     QuestionMapper questionMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    QuestionExtMapper questionExtMapper;
 
     public PaginationDto list(Integer page, Integer size){
 
@@ -31,7 +34,9 @@ public class QuestionService {
         //得到所有问题
 //        List<Question> questions=questionMapper.
 //                selectByExampleWithRowbounds(new QuestionExample(),new RowBounds(offset,size));
-        List<Question> questions=questionMapper.selectByExampleWithBLOBsWithRowbounds(new QuestionExample(),new RowBounds(offset,size));
+        QuestionExample questionExample=new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
+        List<Question> questions=questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample,new RowBounds(offset,size));
 
         //设置分页方案信息
         PaginationDto paginationDto=setPaginationQuestions(questions);
@@ -45,6 +50,7 @@ public class QuestionService {
         int offset=size*(page-1);
         //得到特定用户的分页方案的所有问题
         QuestionExample allQuestions=new QuestionExample();
+        allQuestions.setOrderByClause("gmt_create desc");
         allQuestions.createCriteria().andCreatorEqualTo(userId);
         List<Question> questions=questionMapper.
                 selectByExampleWithBLOBsWithRowbounds(allQuestions,new RowBounds(offset,size));
@@ -109,6 +115,10 @@ public class QuestionService {
             question.setGmtModified(System.currentTimeMillis());
             questionMapper.insertSelective(question);
         }
+    }
+
+    public void incView(int questionId){
+        questionExtMapper.incView(questionId);
     }
 
 //    public Question getQuestionById(Integer id) {

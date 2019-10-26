@@ -13,8 +13,13 @@ body{
 }
 
 .media-object{
-    height:60px;
-    width: 60px;
+    height:38px;
+    width: 38px;
+}
+
+.media-body .media-heading{
+    color: #999999;
+    /*padding-top: 10px;*/
 }
 
 .text-desc{
@@ -27,6 +32,10 @@ body{
     margin-top: 15px;
 }
 
+.question-tag{
+    margin-right: 5px;
+}
+
 .community-menu{
     font-size: 13px;
     color:#999;
@@ -35,3 +44,56 @@ body{
 .error-page{
     margin: 50px;
 }
+
+.comment{
+    margin: 10px 0;
+}
+
+.sub-comments{
+    border-radius: 5px;
+    margin-top: 10px;
+    border: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.sub-comments .btn{
+    margin: 10px 0;
+}
+
+.sub-comments .comments{
+    margin-top: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.btn-comment{
+    float: right;
+    margin-bottom: 10px;
+}
+
+.comment-sp{
+    margin-top: 10px;
+}
+
+.menu{
+    color:#999;
+    margin-top: 5px;
+}
+
+.menu .icon{
+    width: 58px;
+    height: 30px;
+    padding: 0 10px;
+    background-color: #fff;
+    border: 1px solid #f5f5f5;
+    border-radius: 4px;
+    line-height: 30px;
+    color: #999999;
+}
+
+.menu .icon:hover{
+    color: #499ef3;
+}
+
+.menu .active{
+     color: #499ef3;
+ }
