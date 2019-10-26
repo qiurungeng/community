@@ -1,5 +1,6 @@
 package com.study.community.controller;
 
+import com.study.community.cache.TagCache;
 import com.study.community.dto.QuestionDto;
 import com.study.community.mapper.QuestionMapper;
 import com.study.community.model.Question;
@@ -23,7 +24,8 @@ public class PublishController {
     QuestionService questionService;
 
     @GetMapping("/publish")
-    public String publish(){
+    public String publish(Model model) {
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 

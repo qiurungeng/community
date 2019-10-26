@@ -7,6 +7,26 @@ body{
     margin-bottom: 15px;
 }
 
+.community-tag:hover {
+    background-color: #339dff;
+    color: #fff !important;
+    text-decoration-line: none;
+}
+
+.community-tag {
+    text-decoration-line: none;
+    cursor: pointer;
+    display: inline-block;
+    height: 20px;
+    line-height: 16px;
+    padding: 2px 5px;
+    background-color: #99cfff;
+    font-size: 12px;
+    color: #fff !important;
+    border-radius: 4px;
+    margin: 4px;
+}
+
 .main{
     margin: 30px;
     background-color: white;
@@ -20,6 +40,20 @@ body{
 .media-body .media-heading{
     color: #999999;
     /*padding-top: 10px;*/
+}
+
+.publish-tag-tab {
+    border: #999 solid 1px;
+    display: none;
+    margin-top: 0;
+    padding: 10px;
+
+}
+
+.publish-tag-tab .label-info {
+    white-space: normal;
+    margin: 5px 5px;
+    display: inline-block;
 }
 
 .text-desc{

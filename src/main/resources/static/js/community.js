@@ -114,3 +114,24 @@ function collapseComment(e) {
         e.classList.add("active");
     }
 }
+
+function showSelectTag() {
+    var tag_area=$("#select-tag");
+    if (tag_area.css("display")=="none"){
+        tag_area.show();
+    }else {
+        tag_area.css("display","none");
+    }
+}
+
+function selectTag(e) {
+    var value = e.getAttribute("data-tag");
+    var previous = $("#tag").val();
+    if (previous.indexOf(value) == -1) {
+        if (previous) {
+            $("#tag").val(previous + '、' + value);
+        } else {
+            $("#tag").val(value);
+        }
+    }
+}
