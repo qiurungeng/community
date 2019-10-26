@@ -122,9 +122,16 @@
                     </div>
                 </div>
             </div>
-            <hr>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h4>相关问题</h4>
+                <div>
+                    <ul th:each="related:${relatedQuestion}" class="question-related">
+                        <li>
+                           <a th:href="@{'/question/'+${related.getId()}}" th:text="${related.getTitle()}"></a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 

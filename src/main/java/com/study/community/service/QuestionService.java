@@ -10,13 +10,16 @@ import com.study.community.mapper.UserMapper;
 import com.study.community.model.Question;
 import com.study.community.model.QuestionExample;
 import com.study.community.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -119,6 +122,32 @@ public class QuestionService {
 
     public void incView(int questionId){
         questionExtMapper.incView(questionId);
+    }
+
+    /**
+     * 根据已有问题的标签选出相关问题
+     * @param questionDto
+     * @return
+     */
+    public List<QuestionDto> selectRelated(QuestionDto questionDto) {
+        if (StringUtils.isBlank(questionDto.getTag())){
+            return new ArrayList<>();
+        }
+        //提取查询用的id、Tag正则表达式
+        String[] tags = StringUtils.split(questionDto.getTag(), "、");
+        String regexpTag= Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question query=new Question();
+        query.setId(questionDto.getId());
+        query.setTag(regexpTag);
+        //查询并将结果封装为dto
+        List<Question> questions=questionExtMapper.seleteRelated(query);
+        List<QuestionDto> results=questions.stream().map(q->{
+            QuestionDto dto=new QuestionDto();
+            BeanUtils.copyProperties(q,dto);
+            return dto;
+        }).collect(Collectors.toList());
+
+        return results;
     }
 
 //    public Question getQuestionById(Integer id) {

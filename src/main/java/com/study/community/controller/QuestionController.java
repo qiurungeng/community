@@ -25,13 +25,16 @@ public class QuestionController {
     public String question(@PathVariable(name = "id")int id, Model model){
 
         QuestionDto questionDto = questionService.getById(id);
+        List<QuestionDto> relatedQuestions=questionService.selectRelated(questionDto);
         List<CommentDto> comments=commentService.listById(id, CommentTypeEnum.QUESTION);
+
         if (questionDto!=null){
             questionService.incView(id);
             questionDto.setViewCount(questionDto.getViewCount()+1);
         }
         model.addAttribute("question",questionDto);
         model.addAttribute("comments",comments);
+        model.addAttribute("relatedQuestion",relatedQuestions);
         return "question";
     }
 }
