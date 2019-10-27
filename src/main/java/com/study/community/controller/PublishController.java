@@ -31,6 +31,7 @@ public class PublishController {
 
     @GetMapping("/publish/{id}")
     public String edit(@PathVariable(name = "id")Integer id,Model model){
+        model.addAttribute("tags", TagCache.get());
         QuestionDto question=questionService.getById(id);
         model.addAttribute("title",question.getTitle());
         model.addAttribute("description",question.getDescription());

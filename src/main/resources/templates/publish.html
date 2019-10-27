@@ -9,6 +9,10 @@
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <script src="/js/community.js"></script>
+    <!--引入Editor.md-->
+    <link rel="stylesheet" href="/css/editormd.min.css">
+    <script src="/js/editormd.min.js"></script>
+
 </head>
 <body>
 
@@ -26,9 +30,23 @@
                     <input type="text" class="form-control" id="title" name="title" placeholder="问题标题——"
                            th:value="${title}"  autocomplete="off"/>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="question-editor">
                     <label for="description">问题补充(必填，请参照右侧提示)：</label>
-                    <textarea class="form-control" name="description" id="description" cols="30" rows="10" th:text="${description}"></textarea>
+                    <textarea class="form-control" name="description" id="description" cols="30" rows="10"
+                              th:text="${description}"  style="display:none;">
+                    </textarea>
+                    <script type="text/javascript">
+                        $(function() {
+                            var editor = editormd("question-editor", {
+                                width  : "100%",
+                                height : 350,
+                                path   : "/lib/",
+                                delay  : 0,
+                                watch  : false,
+                                placeholder:"请输入问题描述，支持markdown格式..."
+                            });
+                        });
+                    </script>
                 </div>
                 <div class="form-group">
                     <label for="tag">添加标签:</label>

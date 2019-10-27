@@ -10,6 +10,10 @@
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <script src="/js/community.js"></script>
     <script src="/js/moment.js"></script>
+    <link rel="stylesheet" th:href="@{/css/editormd.preview.min.css}">
+    <script th:src="@{/js/editormd.min.js}"></script>
+    <script th:src="@{/lib/marked.min.js}"></script>
+    <script th:src="@{/lib/prettify.min.js}"></script>
 </head>
 <body>
 <div th:replace="navigation :: nav_bar"></div>
@@ -25,9 +29,15 @@
                 阅读数：<span th:text="${question.viewCount}"></span>
                 </span>
                 <hr >
-                <!--内容-->
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${question.description}">
+                <!--内容,通过markdown editor显示-->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="question-view">
+                    <textarea style="display:none;" th:text="${question.description}"></textarea>
                 </div>
+                <script type="text/javascript">
+                    $(function() {
+                        editormd.markdownToHTML("question-view", {});
+                    });
+                </script>
                 <!--标签-->
                 <hr  class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
