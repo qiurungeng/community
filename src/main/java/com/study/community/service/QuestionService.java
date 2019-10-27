@@ -57,10 +57,6 @@ public class QuestionService {
         allQuestions.createCriteria().andCreatorEqualTo(userId);
         List<Question> questions=questionMapper.
                 selectByExampleWithBLOBsWithRowbounds(allQuestions,new RowBounds(offset,size));
-//        for (Question question :
-//                questions) {
-//            System.out.println("【QuestionServer：User questions】:"+question.toString());
-//        }
         //设置分页方案信息
         PaginationDto paginationDto=setPaginationQuestions(questions);
             //个人所有问题数
@@ -87,7 +83,7 @@ public class QuestionService {
             questionDtoList.add(questionDto);
         }
 
-        paginationDto.setQuestions(questionDtoList);
+        paginationDto.setData(questionDtoList);
         return paginationDto;
     }
 

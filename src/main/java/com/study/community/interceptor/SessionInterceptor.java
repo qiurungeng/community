@@ -1,8 +1,11 @@
 package com.study.community.interceptor;
 
+import com.study.community.exception.CustomizeErrorCode;
+import com.study.community.exception.CustomizeException;
 import com.study.community.mapper.UserMapper;
 import com.study.community.model.User;
 import com.study.community.model.UserExample;
+import com.study.community.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 public class SessionInterceptor implements HandlerInterceptor {
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    NotificationService notificationService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -25,6 +30,8 @@ public class SessionInterceptor implements HandlerInterceptor {
         User cookieUser=null;
         //看session中是否有已登录的User
         if (sessionUser!=null){
+            Long unreadCount=notificationService.unreadCount(sessionUser.getId());
+            request.getSession().setAttribute("unreadCount",unreadCount);
             return true;
         }
         //看Cookie中是否有已登录的User
@@ -37,14 +44,17 @@ public class SessionInterceptor implements HandlerInterceptor {
                     cookieUser=userMapper.selectByExample(userExample).get(0);
                     if (cookieUser!=null){
                         request.getSession().setAttribute("user",cookieUser);
+                        Long unreadCount=notificationService.unreadCount(sessionUser.getId());
+                        request.getSession().setAttribute("unreadCount",unreadCount);
                     }
                     break;
                 }
             }
-            if (cookieUser==null){
-                System.out.println("卡在这里了");
-                response.sendRedirect("/");
-            }
+
+        }
+        if (cookieUser==null&&sessionUser==null){
+            System.out.println("用户未登录");
+            throw new CustomizeException(CustomizeErrorCode.NO_LOGIN);
         }
         return true;
     }

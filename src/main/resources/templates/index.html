@@ -26,7 +26,7 @@
             <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span>发现</h2>
             <hr/>
 
-            <ul class="media-list" th:each="question:${pagination.questions}">
+            <ul class="media-list" th:each="question:${pagination.data}">
                 <li class="media">
                     <div class="media-left">
                         <a th:href="@{'/question/'+${question.id}}">
