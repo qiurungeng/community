@@ -6,6 +6,7 @@ function post_comment(id,content,type) {
         alert("评论不能为空");
         return;
     }
+
     $.ajax({
         type:"POST",
         url:"/comment",

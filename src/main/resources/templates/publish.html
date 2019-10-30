@@ -12,6 +12,7 @@
     <!--引入Editor.md-->
     <link rel="stylesheet" href="/css/editormd.min.css">
     <script src="/js/editormd.min.js"></script>
+    <script src="/plugins/image-dialog/image-dialog.js"></script>
 
 </head>
 <body>
@@ -39,11 +40,14 @@
                         $(function() {
                             var editor = editormd("question-editor", {
                                 width  : "100%",
-                                height : 350,
+                                height : 400,
                                 path   : "/lib/",
                                 delay  : 0,
                                 watch  : false,
-                                placeholder:"请输入问题描述，支持markdown格式..."
+                                placeholder:"请输入问题描述，支持markdown格式...",
+                                imageUpload          : true,
+                                imageFormats         : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                                imageUploadURL       : "/file/upload"
                             });
                         });
                     </script>

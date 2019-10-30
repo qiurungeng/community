@@ -77,11 +77,13 @@ public class CommentService {
      * 通知被评论人
      * @param comment
      * @param receiverId
-     * @param title
      * @param notificationType
      */
     private void createNotify(Comment comment, Long receiverId, String outerTitle, String notifier,
                               NotificationTypeEnum notificationType,Long outerId) {
+        if (receiverId.equals(comment.getCommentator().longValue())){
+            return;
+        }
         Notification notification=new Notification();
         notification.setGmtCreate(System.currentTimeMillis());
         notification.setType(notificationType.getType());
