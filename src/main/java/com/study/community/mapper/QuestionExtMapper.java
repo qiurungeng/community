@@ -1,5 +1,6 @@
 package com.study.community.mapper;
 
+import com.study.community.dto.QuestionQueryDto;
 import com.study.community.model.Question;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,4 +20,13 @@ public interface QuestionExtMapper {
 
     @Select("select * from question where id!=#{question.id} and tag regexp #{question.tag}")
     List<Question> seleteRelated(@Param("question") Question question);
+
+    @Select("select count(*) from question " +
+            "where (case when #{dto.search} is not null then TITLE regexp #{dto.search} else 1=1 end)")
+    int countBySearch(@Param("dto")QuestionQueryDto dto);
+
+    @Select("select * from question " +
+            "where (case when #{dto.search} is not null then TITLE regexp #{dto.search} else 1=1 end) " +
+            "order by gmt_create desc limit #{dto.page},#{dto.size}")
+    List<Question> selectBySearch(@Param("dto")QuestionQueryDto dto);
 }

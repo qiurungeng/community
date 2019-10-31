@@ -2,6 +2,7 @@ package com.study.community.service;
 
 import com.study.community.dto.PaginationDto;
 import com.study.community.dto.QuestionDto;
+import com.study.community.dto.QuestionQueryDto;
 import com.study.community.exception.CustomizeErrorCode;
 import com.study.community.exception.CustomizeException;
 import com.study.community.mapper.QuestionExtMapper;
@@ -31,19 +32,29 @@ public class QuestionService {
     @Autowired
     QuestionExtMapper questionExtMapper;
 
-    public PaginationDto list(Integer page, Integer size){
+    public PaginationDto list(String search,Integer page, Integer size){
+        if (StringUtils.isNotBlank(search)){
+            String[] tags=StringUtils.split(search," ");
+            search=Arrays.stream(tags).collect(Collectors.joining("|"));
+        }
+        QuestionQueryDto questionQueryDto=new QuestionQueryDto();
+        questionQueryDto.setSearch(search);
+        int totalCount=questionExtMapper.countBySearch(questionQueryDto);
 
         int offset=size*(page-1);
-        //得到所有问题
-//        List<Question> questions=questionMapper.
-//                selectByExampleWithRowbounds(new QuestionExample(),new RowBounds(offset,size));
-        QuestionExample questionExample=new QuestionExample();
-        questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions=questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample,new RowBounds(offset,size));
+
+        questionQueryDto.setSize(size);
+        questionQueryDto.setPage(offset);
+        List<Question> questions=questionExtMapper.selectBySearch(questionQueryDto);
+
+//        QuestionExample questionExample=new QuestionExample();
+//        questionExample.setOrderByClause("gmt_create desc");
+//        List<Question> questions=questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample,new RowBounds(offset,size));
 
         //设置分页方案信息
         PaginationDto paginationDto=setPaginationQuestions(questions);
-        int totalCount=(int)questionMapper.countByExample(new QuestionExample());
+
+//        int totalCount=(int)questionMapper.countByExample(new QuestionExample());
         paginationDto.setPagination(totalCount,page,size);
         //返回分页方案
         return paginationDto;
